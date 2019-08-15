@@ -13,6 +13,15 @@ Future<ResultPokemons> getPokemonsPage(
   return data;
 }
 
+Future<String> getPokemonDescription(
+    {final String lang = "us", final String id = "0"}) async {
+  final request_url =
+      "https://get-pokemon-description.santyxdz.now.sh/?id=$id&lang=$lang";
+  final response = await dio.get(request_url);
+  final String data = response.data;
+  return data;
+}
+
 String getPokemonImage(dynamic id, {full: false}) {
   final pokemonId = padId(id.toString());
   return 'https://assets.pokemon.com/assets/cms2/img/pokedex/${full ? 'full' : 'detail'}/$pokemonId.png';

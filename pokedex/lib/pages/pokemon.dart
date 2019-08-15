@@ -105,9 +105,11 @@ class _PokeInfoState extends State<PokeInfo> {
                       padding: EdgeInsets.only(bottom: 10, left: 10, right: 10),
                       decoration: BoxDecoration(
                           border: Border(
-                              bottom: isSelected
-                                  ? BorderSide(color: Colors.black, width: 2)
-                                  : BorderSide.none)),
+                              bottom: BorderSide(
+                                  color: isSelected
+                                      ? Colors.black
+                                      : Colors.transparent,
+                                  width: 2))),
                       child: Text(
                         menu,
                         style: isSelected
@@ -142,10 +144,88 @@ class AboutTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(widget.pokemon.id.toString()),
+        FutureBuilder<String>(
+            future: getPokemonDescription(id: widget.pokemon.id.toString()),
+            builder: (context, snapshot) {
+              String description = snapshot.data;
+              if (description == null) {
+                return Text("Loading...");
+              }
+              return Text(description.replaceAll("\n", " "));
+            }),
+        Container(
+          margin: EdgeInsets.all(7),
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            boxShadow: [
+              new BoxShadow(
+                  color: Colors.black.withOpacity(0.25),
+                  offset: new Offset(0.0, 1.0),
+                  blurRadius: 7,
+                  spreadRadius: 0)
+            ],
+          ),
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Expanded(
+                child: new DescriptionColumn(
+                  widget: widget,
+                  title: "Height",
+                  description:
+                      "${(widget.pokemon.height * 0.1).toStringAsFixed(2)}m (${metersToFeetsAndInches(widget.pokemon.height * 0.1)})",
+                ),
+              ),
+              Expanded(
+                child: new DescriptionColumn(
+                  widget: widget,
+                  title: "Weight",
+                  description:
+                      "${(widget.pokemon.weight * 0.1).toStringAsFixed(2)}kg (${kilogramsToPounds(widget.pokemon.weight * 0.1).toStringAsFixed(2)} lbs)",
+                ),
+              ),
+            ],
+          ),
+        ),
         Text("a"),
-        Text("a"),
+      ],
+    );
+  }
+}
+
+class DescriptionColumn extends StatelessWidget {
+  const DescriptionColumn({
+    Key key,
+    @required this.widget,
+    @required this.title,
+    @required this.description,
+  }) : super(key: key);
+
+  final PokeInfo widget;
+  final String title;
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(bottom: 5),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade400,
+            ),
+          ),
+        ),
+        Text(description),
       ],
     );
   }
@@ -163,8 +243,8 @@ class BaseStatsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Text(widget.pokemon.id.toString()),
         Text("b"),
+        Text(widget.pokemon.id.toString()),
         Text("b"),
       ],
     );

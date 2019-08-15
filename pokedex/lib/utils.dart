@@ -9,6 +9,46 @@ String padId(String id) {
   return id.padLeft(3, '0');
 }
 
+const METERS_TO_FET = 3.28084;
+const METERS_TO_IN = 39.3701;
+const KILOGRAMS_TO_POUNDS = 2.20462;
+
+double metersToFeets(double meters) {
+  return meters * METERS_TO_FET;
+}
+
+double metersToInches(double meters) {
+  return meters * METERS_TO_IN;
+}
+
+double feetsToMeters(double feets) {
+  return feets * (1 / METERS_TO_FET);
+}
+
+double inchesToMeters(double feets) {
+  return feets * (1 / METERS_TO_IN);
+}
+
+double feetsToInches(double feets) {
+  return metersToInches(feetsToMeters(feets));
+}
+
+double kilogramsToPounds(double kilograms) {
+  return kilograms * KILOGRAMS_TO_POUNDS;
+}
+
+double poundsToKilograms(double pounds) {
+  return pounds * (1 / KILOGRAMS_TO_POUNDS);
+}
+
+String metersToFeetsAndInches(double meters) {
+  var feets = metersToFeets(meters);
+  var fullFeets = feets.floor();
+  var remainingFeets = feets - fullFeets;
+  var inchesInRemainingFeets = feetsToInches(remainingFeets);
+  return "$fullFeets'${inchesInRemainingFeets.toStringAsFixed(1)}\"";
+}
+
 ///  GraphQL
 String uuidFromObject(Object object) {
   if (object is Map<String, Object>) {
