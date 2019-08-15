@@ -5,6 +5,10 @@ String capitalize(String val) {
   return '${val[0].toUpperCase()}${val.substring(1)}';
 }
 
+String padId(String id) {
+  return id.padLeft(3, '0');
+}
+
 ///  GraphQL
 String uuidFromObject(Object object) {
   if (object is Map<String, Object>) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/components/chip.dart';
 import 'package:pokedex/constants/type_colors.dart';
 import 'package:pokedex/pokeapi/crud.dart';
 import 'package:pokedex/pokeapi/results.dart';
@@ -52,17 +53,9 @@ class PokeCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: types.map((typeName) {
-                return Container(
-                    padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-                    margin: EdgeInsets.only(bottom: 5, left: 5),
-                    decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius:
-                            BorderRadius.all(new Radius.circular(10.0))),
-                    child: Text(
-                      capitalize(typeName),
-                      style: TextStyle(color: Colors.white),
-                    ));
+                return new TypeChip(
+                  text: capitalize(typeName),
+                );
               }).toList(),
             ),
           )
