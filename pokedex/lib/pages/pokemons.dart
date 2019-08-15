@@ -1,44 +1,21 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokedex/components/poke_card.dart';
 import 'package:pokedex/constants/labels.dart';
-import 'package:pokedex/constants/page_colors.dart';
-import 'package:pokedex/pokeapi/crud.dart';
-import 'package:pokedex/pokeapi/results.dart';
+import 'package:pokedex/pages/pokemon.dart';
+import 'package:pokedex/types/querys/get_pokemons.dart';
 
-class Pokemons extends StatelessWidget {
-  const Pokemons({Key key}) : super(key: key);
+class Pokemons extends StatefulWidget {
+  final GraphQLClient client;
+  const Pokemons({Key key, @required this.client}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-          child: Column(
-        children: <Widget>[
-          Container(
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.only(left: 32, top: 32),
-            child: Text(
-              Labels.pokemons,
-              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: PageColors[Labels.pokemons]),
-            ),
-          ),
-          Expanded(child: PokemonGridList(),)
-        ],
-      )),
-    );
-  }
+  _PokemonsState createState() => _PokemonsState();
 }
 
-class PokemonGridList extends StatefulWidget {
-  PokemonGridList({Key key}) : super(key: key);
-  _PokemonGridListState createState() => _PokemonGridListState();
-}
-
-class _PokemonGridListState extends State<PokemonGridList> {
-
-  List<ResultPokemon> pokemons = [];
-  String next;
-  bool loadMore = true;
-
+class _PokemonsState extends State<Pokemons> {
+  List<Pokemon> pokemons = [];
   ScrollController _scrollController = ScrollController();
 
   @override
@@ -54,14 +31,11 @@ class _PokemonGridListState extends State<PokemonGridList> {
   }
 
   fetch() async {
-    if(!loadMore) {
-      return;
-    }
-    var result = await getPokemonsPage(url: next, limit: 20);
+    QueryResult res = await widget.client.query(getPage(this.pokemons.length));
+    GraphResponseGetPokemons resp = GraphResponseGetPokemons.fromMap(res.data);
+    List<Pokemon> pokemons = resp.pokemon;
     setState(() {
-      pokemons.addAll(result.results);
-      next = result.next;
-      loadMore = result.next != null;
+      this.pokemons.addAll(pokemons);
     });
   }
 
@@ -71,28 +45,100 @@ class _PokemonGridListState extends State<PokemonGridList> {
     _scrollController.dispose();
   }
 
+  QueryOptions getPage([int offset = 0, int limit = 20]) {
+    String getPokemons = """
+      query GetPokemons(\$limit: Int!, \$offset: Int!) {
+        pokemon(limit:\$limit, offset: \$offset) {
+          id,
+          name,
+          types {
+            slot
+            type {
+              name
+            }
+          }
+        }
+      }
+    """;
+    return QueryOptions(
+      document: getPokemons,
+      variables: {
+        'offset': offset,
+        'limit': limit,
+      },
+      // pollInterval: 10000,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: EdgeInsets.only(left: 32, right: 32),
+    return Scaffold(
+        body: CustomScrollView(
       controller: _scrollController,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount:  2,
-        childAspectRatio: 3/4
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        if(index == pokemons.length) {
-          return Text("Loading...");
-        }
-        final pokeResult = pokemons.elementAt(index);
-        return Column(
-          children: <Widget>[
-            Image.network(getPokemonImage(pokeResult.id)),
-            Text(pokeResult.name),
-          ],
-        );
-      },
-      itemCount: pokemons.length + 1,
-    );
+      slivers: <Widget>[
+        // SliverSafeArea(
+        //   bottom: false,
+        //   sliver: SliverToBoxAdapter(
+        //     child: Container(
+        //       alignment: Alignment.centerLeft,
+        //       padding: EdgeInsets.only(left: 24, top: 24),
+        //       child: ,
+        //     ),
+        //   ),
+        // ),
+        CupertinoSliverNavigationBar(
+          largeTitle: Text("Pokemons"),
+          backgroundColor: Colors.white.withOpacity(0.5),
+          border: Border.all(width: 0, color: Colors.white.withAlpha(0)),
+          automaticallyImplyLeading: false,
+        ),
+        SliverPadding(
+          padding: EdgeInsets.only(left: 16, right: 16),
+          sliver: SliverGrid(
+            delegate: SliverChildBuilderDelegate((ctx, index) {
+              if (index == pokemons.length) {
+                return Text("Loading...");
+              }
+              final pokeResult = pokemons.elementAt(index);
+              return Container(
+                padding: EdgeInsets.all(5),
+                child: InkWell(
+                  child: PokeCard(
+                    pokemon: pokeResult,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => PokemonPage(
+                                  id: pokeResult.id,
+                                ))
+
+                        // MaterialPageRoute(
+                        //   builder: (context) => PokemonPage(
+                        //     id: pokeResult.id,
+                        //   ),
+                        // ),
+                        );
+                  },
+                ),
+              );
+            }, childCount: pokemons.length + 1),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, childAspectRatio: 4 / 3),
+          ),
+        )
+
+        // Expanded(
+        //   child: GraphQLConsumer(
+        //     builder: (GraphQLClient client) {
+        //       return PokemonGridList(
+        //         client: client,
+        //       );
+        //     },
+        //   ),
+        // )
+      ],
+    ));
   }
 }

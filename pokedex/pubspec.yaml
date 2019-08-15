@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   dio: ^2.1.13
   flutter_svg: ^0.14.0
+  graphql_flutter: ^2.1.0
 
 dev_dependencies:
   flutter_test:

@@ -7,4 +7,7 @@ class AppColors {
   static Color get yellow => Color(0xffffce4a);
   static Color get purple => Color(0xff7c528b);
   static Color get brown => Color(0xffaf726d);
+  static Color get apple_green => Color(0xff6ab04c);
+  static Color get pink => Color(0xffff7979);
+  // static Color get 
 }
