@@ -192,7 +192,80 @@ class AboutTab extends StatelessWidget {
             ],
           ),
         ),
-        Text("a"),
+        Padding(
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
+          child: Text(
+            "Breeding",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        Table(
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          children: [
+            TableRow(children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: Text(
+                  "Gender",
+                  style: TextStyle(
+                      color: Colors.grey, fontWeight: FontWeight.w500),
+                ),
+              ),
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "\u2642",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                        Text("87.5%")
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "\u2640",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      Text("87.5%")
+                    ],
+                  )
+                ],
+              )
+            ]),
+            TableRow(children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: Text(
+                  "Egg Groups",
+                  style: TextStyle(
+                      color: Colors.grey, fontWeight: FontWeight.w500),
+                ),
+              ),
+              Text("Monster")
+            ]),
+            TableRow(children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: Text(
+                  "Egg Cycle",
+                  style: TextStyle(
+                      color: Colors.grey, fontWeight: FontWeight.w500),
+                ),
+              ),
+              Text("Grass")
+            ]),
+          ],
+        )
       ],
     );
   }

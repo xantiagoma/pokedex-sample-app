@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue, backgroundColor: Color(0XF6F6F6FF)),
         // home: Scaffold(body: Home(),),
         initialRoute: '/',
+        debugShowCheckedModeBanner: false,
         routes: {
           '/': (ctx) => Home(),
           Labels.pokemons: (ctx) => GraphQLConsumer(
