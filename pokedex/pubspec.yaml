@@ -26,6 +26,7 @@ dependencies:
   dio: ^2.1.13
   flutter_svg: ^0.14.0
   graphql_flutter: ^2.1.0
+  google_maps_flutter: ^0.5.20+3
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokedex/constants/labels.dart';
 import 'package:pokedex/pages/home.dart';
+import 'package:pokedex/pages/locations.dart';
 import 'package:pokedex/pages/pokemons.dart';
 import 'package:pokedex/utils.dart';
 
@@ -30,7 +31,8 @@ class MyApp extends StatelessWidget {
                     client: client,
                   );
                 },
-              )
+              ),
+          Labels.locations: (ctx) => LocationsPage()
         },
         onUnknownRoute: (settings) => MaterialPageRoute(
               builder: (context) => Scaffold(
